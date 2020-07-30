@@ -45,20 +45,17 @@ public class PlayerController : MonoBehaviour
 
         //if (Input.GetKeyDown(KeyCode.R))
         //    animator.SetBool
+        //GetComponent<Animator>().speed = 3f;
 
-        GetComponent<Animator>().speed = 3f;
-        //Vector3 offset = new Vector3(Input.GetAxis("Horizontal"), 0f, 0) * Time.deltaTime * speed;
         Vector3 offset = new Vector3(1f, 0f, 0) * Time.deltaTime * speed;
         Vector3 pos = transform.position + offset;
+
+        if (speed < initialSpeed)
+            pos = introMovement(pos);
+
         float height = terrain.SampleHeight(pos);
         if (height > pos.y)
             pos.y = height;
-        //playerRb.AddForce(dir * moveForce, ForceMode.Force);
-
-        if (speed < initialSpeed)
-        {
-            pos = introMovement(pos);
-        }
 
         transform.position = pos ;
 
