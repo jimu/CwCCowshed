@@ -10,7 +10,12 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
-    public enum GameStates { INVALID, StartMenu, Playing, GameOver, ScoreMenu}
+    public enum GameState { INVALID, StartMenu, Instructions, Playing, GameOver, HighScoreMenu}
+
+    string urlAnimalFarm1 = "https://www.jimu.net/CwCAnimalFarm/index.html";
+    string urlFeedback = "https://learn.unity.com/submission/5f1ad2ededbc2a00215d2dc7";
+    GameState gameState = GameState.INVALID;
+
     float distance = 0;
     Text distanceText;
     Transform playerTransform;
@@ -21,11 +26,20 @@ public class GameManager : MonoBehaviour
     const string KEY_DISTANCE = "jimu.cowshed.distance";
 
 
+    [SerializeField] GameObject startPanel;
+    [SerializeField] GameObject highScorePanel;
+    [SerializeField] GameObject instructionsPanel;
+    [SerializeField] GameObject gameOverPanel;
+
+    public static GameManager instance;
+
     void Awake()
     {
         distanceText = GameObject.FindGameObjectWithTag("DistanceText").GetComponent<Text>();
         playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
         SetDistance(0);
+
+        instance = this;
 
         tombstoneFactory = GetComponent<TombstoneFactory>();
         tombstoneList = GetComponent<TombstoneList>();
@@ -45,16 +59,27 @@ public class GameManager : MonoBehaviour
         //PlayerPrefs0.Save();
     }
 
+
+    public void GameOver()
+    {
+        SetGameState(GameState.GameOver);
+        // todo highscore
+    }
+
+
+
     private void Start()
     {
         NetworkManager.instance.Listen(gameObject, "ScoresReady");
         NetworkManager.instance.Fetch();
+        Debug.Log("Start");
+        SetGameState(GameState.StartMenu);
 
-        tombstoneFactory.Create("Boxer", 20f, "I will work harder!", "1944");
-        tombstoneFactory.Create("Squealer", 24f, "Do not imagine, comrades, that leadership is a pleasure!", "Jul 29");
-        tombstoneFactory.Create("Squealer", 24f, "Do not imagine, comrades, that leadership is a pleasure!", "Jul 29");
-        tombstoneFactory.Create("Sheep", 42f, "FOUR LEGS GOOD, TWO LEGS BAD", "Jul 29");
-        tombstoneFactory.Create("Benjamin", 96f, "Donkeys live a long time. None of you has ever seen a dead donkey.", "1944");
+        //tombstoneFactory.Create("Boxer", 20f, "I will work harder!", "1944");
+        //tombstoneFactory.Create("Squealer", 24f, "Do not imagine, comrades, that leadership is a pleasure!", "Jul 29");
+        //tombstoneFactory.Create("Squealer", 24f, "Do not imagine, comrades, that leadership is a pleasure!", "Jul 29");
+        //tombstoneFactory.Create("Sheep", 42f, "FOUR LEGS GOOD, TWO LEGS BAD", "Jul 29");
+        //tombstoneFactory.Create("Benjamin", 96f, "Donkeys live a long time. None of you has ever seen a dead donkey.", "1944");
 
     }
 
@@ -62,11 +87,21 @@ public class GameManager : MonoBehaviour
     {
         Debug.Log("ScoresReady: " + NetworkManager.instance.scores.Length);
 
+        string names = "";
+        string scores = "";
+        string dates = "";
+
         foreach (HighScore score in NetworkManager.instance.scores)
+        {
             Debug.Log("Name=" + score.name + " score=" + score.score + " epitath=" + score.epitath + " date=" + score.date);
+            names += score.name + "\n";
+            scores += score.score + "\n";
+            dates += score.date + "\n";
+        }
 
         tombstoneList.SetTombstones();
 
+        highScorePanel.GetComponent<PopulateHighScores>().ScoresReady(names, scores, dates);
     }
 
     float SetDistance(float value)
@@ -98,4 +133,47 @@ public class GameManager : MonoBehaviour
             Time.timeScale= 0f;
         }
     }
+
+    void SetGameState(GameState gameState)
+    {
+        this.gameState = gameState;
+
+        startPanel.SetActive(gameState == GameState.StartMenu);
+        highScorePanel.SetActive(gameState == GameState.HighScoreMenu);
+        instructionsPanel.SetActive(gameState == GameState.Instructions);
+        gameOverPanel.SetActive(gameState == GameState.GameOver);
+
+        Time.timeScale = gameState == GameState.Playing ? 1f : 0f;
+
+    }
+
+    public void OnStartButton()
+    {
+        SetGameState(GameState.Playing);
+    }
+
+    public void OnInstructionsButton()
+    {
+        SetGameState(GameState.Instructions);
+    }
+
+    public void OnHighScoresButton()
+    {
+        SetGameState(GameState.HighScoreMenu);
+
+    }
+
+
+    public void OnPlayAF1Button()
+    {
+        Application.OpenURL(urlAnimalFarm1);
+    }
+
+    public void OnFeedbackButton()
+    {
+        Application.OpenURL(urlFeedback);
+    }
+
 }
+
+

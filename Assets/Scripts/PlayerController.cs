@@ -7,17 +7,22 @@ public class PlayerController : MonoBehaviour
     const float introX = 12.75f;
     const float introSpeed = 1f;
     const float initialSpeed = 10f;
+    const float walkThreshold = 7f;
 
     Rigidbody playerRb;
     [SerializeField] float speed = 10f;
-    [SerializeField] float jumpForce = 15;
+    [SerializeField] float jumpForce = 30;
+
     //[SerializeField] float gravityModifier = 1f;
+
+    [SerializeField] ParticleSystem explosionParticle;
 
     Terrain terrain;
 
     Animator animator;
 
     bool isOnGround = true;
+    bool isDoubleJump = false;
     
     // Start is called before the first frame update
     void Start()
@@ -26,7 +31,7 @@ public class PlayerController : MonoBehaviour
         //Physics.gravity = gravityModifier;
         animator = GetComponent<Animator>();
         terrain = GameObject.FindObjectOfType<Terrain>();
-
+        Physics.gravity = new Vector3(0, -18f, 0);
         speed = introSpeed;
 
     }
@@ -34,14 +39,10 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && isOnGround)
-        {
-            playerRb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-            isOnGround = false;
-            animator.SetTrigger("Jump_trig");
-        }
         if (Input.GetKeyDown(KeyCode.X))
             animator.SetBool("Death_b", true);
+
+        animator.SetFloat("Speed_f", speed / walkThreshold);
 
         //if (Input.GetKeyDown(KeyCode.R))
         //    animator.SetBool
@@ -58,8 +59,27 @@ public class PlayerController : MonoBehaviour
             pos.y = height;
 
         transform.position = pos ;
+        if (!isOnGround && pos.y < height + 0.2)
+        {
+            isOnGround = true;
+            isDoubleJump = false;
+        }
+
+        if (Input.GetKeyDown(KeyCode.Space) && !isDoubleJump)
+        {
+            Debug.Log("Jumping with force " + jumpForce + " Gravity is " + Physics.gravity);
+            if (!isOnGround)
+                isDoubleJump = true;
+            if (isOnGround)
+                playerRb.velocity = Vector3.zero;
+            playerRb.AddForce(Vector3.up * jumpForce * (isDoubleJump ? 2 : 1), ForceMode.Impulse);
+            isOnGround = false;
+            animator.SetTrigger("Jump_trig");
+        }
 
     }
+
+
 
     Vector3 introMovement(Vector3 pos)
     {
@@ -77,9 +97,28 @@ public class PlayerController : MonoBehaviour
     }
 
 
+
     private void OnCollisionEnter(Collision collision)
     {
         isOnGround = true;
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        Debug.Log("I hit a " + other.name);
+
+        if (other.CompareTag("Obstacle"))
+        {
+            explosionParticle.Play();
+            Invoke("GameOver", 2f);
+            animator.SetInteger("DeathType_int", 2);
+            animator.SetBool("Death_b", true);
+        }
+    }
+
+    private void GameOver()
+    {
+        GameManager.instance.GameOver();
     }
 
     private float playerIntroZCoord(float x)

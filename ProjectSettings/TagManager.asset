@@ -9,6 +9,7 @@ TagManager:
   - Pickup
   - Ammo
   - DistanceText
+  - Obstacle
   layers:
   - Default
   - TransparentFX

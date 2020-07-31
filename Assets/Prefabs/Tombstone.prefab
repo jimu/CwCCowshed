@@ -105,9 +105,10 @@ GameObject:
   - component: {fileID: 603673266354057033}
   - component: {fileID: 596634722936067683}
   - component: {fileID: 1276843595120418}
+  - component: {fileID: -4312636703477922042}
   m_Layer: 0
   m_Name: Tombstone
-  m_TagString: Untagged
+  m_TagString: Obstacle
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -191,6 +192,19 @@ MonoBehaviour:
   shadowMesh: {fileID: 582461274846630466}
   dateMesh: {fileID: 1424042793}
   nameplate: {fileID: 582461276411456239}
+--- !u!65 &-4312636703477922042
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 581483570206188219}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.74740326, y: 1.1886919, z: 0.2515279}
+  m_Center: {x: -0.00014540553, y: 0.60579574, z: 0.0003984496}
 --- !u!1 &582461274846630476
 GameObject:
   m_ObjectHideFlags: 0
@@ -497,7 +511,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 582461276411456239}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 078d2d9910219a74094561e896fdca99, type: 3}
   m_Name: 

@@ -47,9 +47,12 @@ public class TombstoneList : MonoBehaviour
         Debug.Log("SetTombstones()");
 
         tombstones = NetworkManager.instance.scores;
-        next = 0;
-        noMore = false;
-        SetNext(0);
+        if (tombstones != null)
+        {
+            next = 0;
+            noMore = false;
+            SetNext(0);
+        }
     }
 
     public void SetNext(float distance)

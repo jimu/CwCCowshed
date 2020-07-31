@@ -26,7 +26,13 @@ public class TombstoneFactory : MonoBehaviour
         float height = terrain.SampleHeight(pos);
         pos.y = height;
         GameObject tombstone = Instantiate(prefab, pos, Quaternion.identity);
-        tombstone.GetComponent<Tombstone>().Set(name, distance, epitath, date);
+        //tombstone.GetComponent<Tombstone>().Set(name, distance, epitath, date);
+        Tombstone t = tombstone.GetComponent<Tombstone>();
+        if (t != null)
+            t.Set(name, distance, epitath, date);
+        else
+            tombstone.GetComponent<TombstoneTMP>().Set(name, distance, epitath, date);
+
         return tombstone;
     }
 }
