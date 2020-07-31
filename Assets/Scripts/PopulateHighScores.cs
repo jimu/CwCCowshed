@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+#pragma warning disable 0649
+
+
 public class PopulateHighScores : MonoBehaviour
 {
     [SerializeField] Text namesText;

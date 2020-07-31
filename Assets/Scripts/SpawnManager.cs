@@ -8,7 +8,7 @@ public class SpawnManager : MonoBehaviour
 {
     [SerializeField] GameObject[] obstacles;
     //[SerializeField] GameObject obstaclePrefab = null;
-    [SerializeField] float startDelay = 3f;
+    [SerializeField] float startDelay = 5f;
     //[SerializeField] float repeatRate = 3f;
     private Vector3 spawnPos = new Vector3(25, 0, 0);
     [SerializeField] float xOffset = 20f;
@@ -35,9 +35,12 @@ public class SpawnManager : MonoBehaviour
 
     void RandomInvoker()
     {
-        Debug.Log("RandomInvoker()");
-        SpawnObstacle();
-        Invoke("RandomInvoker", Random.Range(minDelay, maxDelay));
+        if (GameManager.instance.Running)
+        {
+            Debug.Log("RandomInvoker()");
+            SpawnObstacle();
+            Invoke("RandomInvoker", Random.Range(minDelay, maxDelay));
+        }
     }
 
 

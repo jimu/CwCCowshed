@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices.ComTypes;
 using UnityEngine;
 using UnityEngine.SocialPlatforms.Impl;
 using UnityEngine.UI;
@@ -30,6 +31,12 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject highScorePanel;
     [SerializeField] GameObject instructionsPanel;
     [SerializeField] GameObject gameOverPanel;
+
+    private bool _running;
+
+    public bool Running {
+        get { return _running; }
+    }
 
     public static GameManager instance;
 
@@ -143,13 +150,18 @@ public class GameManager : MonoBehaviour
         instructionsPanel.SetActive(gameState == GameState.Instructions);
         gameOverPanel.SetActive(gameState == GameState.GameOver);
 
-        Time.timeScale = gameState == GameState.Playing ? 1f : 0f;
+        _running = gameState == GameState.Playing;
+        //Time.timeScale = gameState == GameState.Playing ? 1f : 0f;
 
     }
 
     public void OnStartButton()
     {
         SetGameState(GameState.Playing);
+    }
+    public void OnReturnToStartMenu()
+    {
+        SetGameState(GameState.StartMenu);
     }
 
     public void OnInstructionsButton()
@@ -160,13 +172,43 @@ public class GameManager : MonoBehaviour
     public void OnHighScoresButton()
     {
         SetGameState(GameState.HighScoreMenu);
-
     }
-
 
     public void OnPlayAF1Button()
     {
         Application.OpenURL(urlAnimalFarm1);
+    }
+
+    private void playDerp()
+    {
+        Time.timeScale = 1.0f;
+        GameObject.Find("EmojiDerp").GetComponent<ParticleSystem>().Play();
+        GameObject.Find("Beta").GetComponent<ParticleSystem>().Play();
+        /*
+        return;
+        Canvas canvas = GameObject.Find("Canvas").GetComponent<Canvas>();
+        Camera camera = GameObject.Find("Main Camera").GetComponent<Camera>();
+        canvas.renderMode = RenderMode.ScreenSpaceCamera;
+        canvas.worldCamera = camera;
+
+        Time.timeScale = 1.0f;
+
+
+        derp2.Play();
+
+        Time.timeScale = 1.0f;
+        derp.Play();
+
+        GameObject c = GameObject.Find("Canvas");
+
+        c.GetComponent<Canvas>().renderMode = RenderMode.ScreenSpaceCamera;
+        Time.timeScale = 1.0f;
+        Debug.Log("PlayDerp");
+        playDerp();
+
+
+        */
+
     }
 
     public void OnFeedbackButton()

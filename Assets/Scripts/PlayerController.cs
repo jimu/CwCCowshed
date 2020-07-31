@@ -39,17 +39,13 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.X))
-            animator.SetBool("Death_b", true);
-
         animator.SetFloat("Speed_f", speed / walkThreshold);
 
-        //if (Input.GetKeyDown(KeyCode.R))
-        //    animator.SetBool
-        //GetComponent<Animator>().speed = 3f;
-
         Vector3 offset = new Vector3(1f, 0f, 0) * Time.deltaTime * speed;
-        Vector3 pos = transform.position + offset;
+
+        Vector3 pos = transform.position;
+        if (GameManager.instance.Running)
+            pos += offset;
 
         if (speed < initialSpeed)
             pos = introMovement(pos);
@@ -115,6 +111,9 @@ public class PlayerController : MonoBehaviour
             animator.SetBool("Death_b", true);
         }
     }
+
+    // todo emoji pleading
+    // todo emoji derp
 
     private void GameOver()
     {
