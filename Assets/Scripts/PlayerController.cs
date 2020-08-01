@@ -19,14 +19,30 @@ public class PlayerController : MonoBehaviour
     //[SerializeField] float gravityModifier = 1f;
 
     [SerializeField] ParticleSystem explosionParticle;
+    [SerializeField] ParticleSystem dirt;
+    bool isDirtPlaying = false;
 
     Terrain terrain;
-
     Animator animator;
 
     bool isOnGround = true;
     bool isDoubleJump = false;
+
+    [SerializeField] GameObject x;
     
+
+    void PlayDirt(bool play = true)
+    {
+        if (isDirtPlaying != play)
+        {
+            isDirtPlaying = play;
+            if (play)
+                dirt.Play();
+            else
+                dirt.Stop();
+        }
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -43,56 +59,53 @@ public class PlayerController : MonoBehaviour
 
     // Update is called once per frame
     void Update()
-    {/*
-        if (GameManager.instance.Running)
-        {
-            playerRb.isKinematic = false;
-            playerRb.useGravity = true;
-        */
+    {
+        if (Input.GetKeyDown(KeyCode.M))
+            Instantiate(x);
+
         float currentSpeed = !GameManager.instance.Running ? 0f :
           deathTime == 0f ? speed : Mathf.Lerp(speed, 0f, (Time.time - deathTime) / deathDuration);
-            // set speed_f to 1.0 for full speed
+        // set speed_f to 1.0 for full speed
 
-            animator.SetFloat("Speed_f", currentSpeed / walkThreshold);
+        animator.SetFloat("Speed_f", currentSpeed / walkThreshold);
 
-            Vector3 offset = new Vector3(1f, 0f, 0) * Time.deltaTime * currentSpeed;
+        Vector3 offset = new Vector3(1f, 0f, 0) * Time.deltaTime * currentSpeed;
 
-            Vector3 pos = transform.position;
-            if (GameManager.instance.Running)
-                pos += offset;
+        Vector3 pos = transform.position;
+        if (GameManager.instance.Running)
+            pos += offset;
 
-            if (speed < initialSpeed)
-                pos = introMovement(pos);
+        if (speed < initialSpeed)
+            pos = introMovement(pos);
 
-            float height = terrain.SampleHeight(pos);
-            if (height > pos.y)
-                pos.y = height;
+        float height = terrain.SampleHeight(pos);
+        if (height > pos.y)
+            pos.y = height;
 
-            transform.position = pos;
-            if (!isOnGround && pos.y < height + 0.2)
-            {
-                isOnGround = true;
-                isDoubleJump = false;
-            }
-
-            if (Input.GetKeyDown(KeyCode.Space) && !isDoubleJump)
-            {
-                Debug.Log("Jumping with force " + jumpForce + " Gravity is " + Physics.gravity);
-                if (!isOnGround)
-                    isDoubleJump = true;
-                if (isOnGround)
-                    playerRb.velocity = Vector3.zero;
-                playerRb.AddForce(Vector3.up * jumpForce * (isDoubleJump ? 2 : 1), ForceMode.Impulse);
-                isOnGround = false;
-                animator.SetTrigger("Jump_trig");
-            }
-            /*
-        }
-        else
+        transform.position = pos;
+        if (!isOnGround && pos.y < height + 0.2)
         {
-            playerRb.isKinematic = false;
-        }*/
+            isOnGround = true;
+            isDoubleJump = false;
+            PlayDirt();
+            Debug.Log("I'm playing dirt");
+        }
 
+        if (isOnGround && !isDirtPlaying && speed == currentSpeed)
+            PlayDirt();
+
+        if (Input.GetKeyDown(KeyCode.Space) && !isDoubleJump)
+        {
+            PlayDirt(false);
+            Debug.Log("Jumping with force " + jumpForce + " Gravity is " + Physics.gravity);
+            if (!isOnGround)
+                isDoubleJump = true;
+            if (isOnGround)
+                playerRb.velocity = Vector3.zero;
+            playerRb.AddForce(Vector3.up * jumpForce * (isDoubleJump ? 2 : 1), ForceMode.Impulse);
+            isOnGround = false;
+            animator.SetTrigger("Jump_trig");
+        }
     }
 
 
@@ -122,10 +135,10 @@ public class PlayerController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("I hit a " + other.name);
 
         if (other.CompareTag("Obstacle") && GameManager.instance.Running)
         {
+            Debug.Log("I hit a " + other.name);
             explosionParticle.Play();
             animator.SetInteger("DeathType_int", 2);
             animator.SetBool("Death_b", true);
@@ -140,6 +153,7 @@ public class PlayerController : MonoBehaviour
 
     private void GameOver()
     {
+        PlayDirt(false);
         GameManager.instance.GameOver();
     }
 
