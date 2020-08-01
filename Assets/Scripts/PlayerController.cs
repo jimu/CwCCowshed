@@ -8,6 +8,9 @@ public class PlayerController : MonoBehaviour
     const float introSpeed = 1f;
     const float initialSpeed = 10f;
     const float walkThreshold = 7f;
+    const float deathDuration = 2f;
+
+    float deathTime = 0f;
 
     Rigidbody playerRb;
     [SerializeField] float speed = 10f;
@@ -32,46 +35,63 @@ public class PlayerController : MonoBehaviour
         animator = GetComponent<Animator>();
         terrain = GameObject.FindObjectOfType<Terrain>();
         Physics.gravity = new Vector3(0, -18f, 0);
+        animator.SetFloat("Speed_f", 0);
+//        playerRb.useGravity = false;
         speed = introSpeed;
-
+        deathTime = 0f;
     }
 
     // Update is called once per frame
     void Update()
-    {
-        animator.SetFloat("Speed_f", speed / walkThreshold);
-
-        Vector3 offset = new Vector3(1f, 0f, 0) * Time.deltaTime * speed;
-
-        Vector3 pos = transform.position;
+    {/*
         if (GameManager.instance.Running)
-            pos += offset;
-
-        if (speed < initialSpeed)
-            pos = introMovement(pos);
-
-        float height = terrain.SampleHeight(pos);
-        if (height > pos.y)
-            pos.y = height;
-
-        transform.position = pos ;
-        if (!isOnGround && pos.y < height + 0.2)
         {
-            isOnGround = true;
-            isDoubleJump = false;
-        }
+            playerRb.isKinematic = false;
+            playerRb.useGravity = true;
+        */
+        float currentSpeed = !GameManager.instance.Running ? 0f :
+          deathTime == 0f ? speed : Mathf.Lerp(speed, 0f, (Time.time - deathTime) / deathDuration);
+            // set speed_f to 1.0 for full speed
 
-        if (Input.GetKeyDown(KeyCode.Space) && !isDoubleJump)
-        {
-            Debug.Log("Jumping with force " + jumpForce + " Gravity is " + Physics.gravity);
-            if (!isOnGround)
-                isDoubleJump = true;
-            if (isOnGround)
-                playerRb.velocity = Vector3.zero;
-            playerRb.AddForce(Vector3.up * jumpForce * (isDoubleJump ? 2 : 1), ForceMode.Impulse);
-            isOnGround = false;
-            animator.SetTrigger("Jump_trig");
+            animator.SetFloat("Speed_f", currentSpeed / walkThreshold);
+
+            Vector3 offset = new Vector3(1f, 0f, 0) * Time.deltaTime * currentSpeed;
+
+            Vector3 pos = transform.position;
+            if (GameManager.instance.Running)
+                pos += offset;
+
+            if (speed < initialSpeed)
+                pos = introMovement(pos);
+
+            float height = terrain.SampleHeight(pos);
+            if (height > pos.y)
+                pos.y = height;
+
+            transform.position = pos;
+            if (!isOnGround && pos.y < height + 0.2)
+            {
+                isOnGround = true;
+                isDoubleJump = false;
+            }
+
+            if (Input.GetKeyDown(KeyCode.Space) && !isDoubleJump)
+            {
+                Debug.Log("Jumping with force " + jumpForce + " Gravity is " + Physics.gravity);
+                if (!isOnGround)
+                    isDoubleJump = true;
+                if (isOnGround)
+                    playerRb.velocity = Vector3.zero;
+                playerRb.AddForce(Vector3.up * jumpForce * (isDoubleJump ? 2 : 1), ForceMode.Impulse);
+                isOnGround = false;
+                animator.SetTrigger("Jump_trig");
+            }
+            /*
         }
+        else
+        {
+            playerRb.isKinematic = false;
+        }*/
 
     }
 
@@ -93,22 +113,25 @@ public class PlayerController : MonoBehaviour
     }
 
 
-
+    /*
     private void OnCollisionEnter(Collision collision)
     {
         isOnGround = true;
     }
+    */
 
     private void OnTriggerEnter(Collider other)
     {
         Debug.Log("I hit a " + other.name);
 
-        if (other.CompareTag("Obstacle"))
+        if (other.CompareTag("Obstacle") && GameManager.instance.Running)
         {
             explosionParticle.Play();
-            Invoke("GameOver", 2f);
             animator.SetInteger("DeathType_int", 2);
             animator.SetBool("Death_b", true);
+            if (deathTime == 0f)
+                deathTime = Time.time;
+            Invoke("GameOver", deathDuration);
         }
     }
 

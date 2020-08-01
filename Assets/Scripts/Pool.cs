@@ -3,35 +3,41 @@ using System.Collections.Generic;
 using System.Drawing;
 using UnityEngine;
 
-public class Pool<T> where T : MonoBehaviour
+
+#pragma warning disable 0649
+
+
+public class Pool
 {
-    [SerializeField] T prefab;
-    T[] pool;
+    [SerializeField] GameObject prefab;
+    GameObject[] pool;
     int next = 0;
     int size;
 
-    Pool(int size)
+    public Pool(GameObject prefab, int size)
     {
         this.size = size;
-        pool = new T[size];
+        pool = new GameObject[size];
 
         for (int i = 0; i < size; ++ i)
         {
-            T obj = GameObject.Instantiate(prefab) as T;
+            GameObject obj = GameObject.Instantiate(prefab);
             pool[i] = obj;
-            obj.gameObject.SetActive(false);
+            obj.SetActive(false);
         }
     }
 
-    public T Get(Vector3 position, Quaternion rotation)
+    public GameObject Get(Vector3 position)
     {
         for (int count = size; count > 0; --count)
         {
-            T obj = pool[next];
-            next = (next + 1) % size;
-            if (!obj.gameObject.activeSelf)
+            GameObject obj = pool[next];
+            next = (next + 1) % size; 
+            if (!obj.activeSelf)
             {
-                obj.gameObject.SetActive(true);
+                obj.SetActive(true);
+                obj.transform.position = position;
+                Debug.Log("Get(" + obj.name + ")");
                 return obj;
             }
         }

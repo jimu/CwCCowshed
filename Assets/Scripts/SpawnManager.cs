@@ -15,22 +15,29 @@ public class SpawnManager : MonoBehaviour
     Terrain terrain;
     Transform player;
 
+    private int poolSize = 3;
+    private Pool[] pools;
+
     [SerializeField] float minDelay = 0.6f;
     [SerializeField] float maxDelay = 2.5f;
 
-    // Start is called before the first frame update
+
     void Start()
     {
         Debug.Log("SpawnManager.Start()");
         terrain = GameObject.FindObjectOfType<Terrain>();
         player = GameObject.FindGameObjectWithTag("Player").transform;
+        BuildPools();
         Invoke("RandomInvoker", startDelay);
     }
 
-    // Update is called once per frame
-    void Update()
+    void BuildPools()
     {
-        
+        int numPools = obstacles.Length;
+        pools = new Pool[numPools];
+
+        for(int i = 0; i < numPools; ++i)
+            pools[i] = new Pool(obstacles[i], poolSize);
     }
 
     void RandomInvoker()
@@ -39,14 +46,13 @@ public class SpawnManager : MonoBehaviour
         {
             Debug.Log("RandomInvoker()");
             SpawnObstacle();
-            Invoke("RandomInvoker", Random.Range(minDelay, maxDelay));
         }
+        Invoke("RandomInvoker", Random.Range(minDelay, maxDelay));
     }
 
 
     void SpawnObstacle()
     {
-
         int nPrefab = Random.Range(0, obstacles.Length);
         Vector3 position = new Vector3(player.position.x + xOffset, 0, player.position.z);
         position.y = terrain.SampleHeight(position) + 0.3f;
@@ -55,8 +61,16 @@ public class SpawnManager : MonoBehaviour
         Physics.Raycast(position, Vector3.down, out hit);
         position.y = terrain.SampleHeight(position);
 
-        GameObject obstacle = Instantiate(obstacles[nPrefab], position, obstacles[nPrefab].transform.rotation);
+        //GameObject obstacle = Instantiate(obstacles[nPrefab], position, obstacles[nPrefab].transform.rotation);
+        GameObject o = pools[nPrefab].Get(position);
+        if (o)
+            o.transform.up -= (transform.up - hit.normal) * 0.4f;
+        else
+            Debug.Log("WTF: pools return NULL");
+
         Debug.Log("SpawnObstacle: " + obstacles[nPrefab].name + " " + position);
-        obstacle.transform.up -= (transform.up - hit.normal) * 0.4f;
+        //obstacle.transform.up -= (transform.up - hit.normal) * 0.4f;
     }
+
+
 }

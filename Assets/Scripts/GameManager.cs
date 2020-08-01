@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.InteropServices.ComTypes;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.SocialPlatforms.Impl;
 using UnityEngine.UI;
 
@@ -32,7 +33,14 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject instructionsPanel;
     [SerializeField] GameObject gameOverPanel;
 
+    [SerializeField] GameObject nextTombstoneIndicator;
+
     private bool _running;
+
+    public int GetScore()
+    {
+        return Mathf.FloorToInt(distance);
+    }
 
     public bool Running {
         get { return _running; }
@@ -121,23 +129,26 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        SetDistance(playerTransform.position.x);
-        tombstoneList.UpdateIndicator(distance);
+        if (Running)
+        {
+            SetDistance(playerTransform.position.x);
+            tombstoneList.UpdateIndicator(distance);
 
-        if (Input.GetKeyDown(KeyCode.F3))
-        {
-            PlayerPrefs.SetString(KEY_DISTANCE, distance.ToString());
-            PlayerPrefs.SetString(KEY_PLAYER_NAME, "Jim " + distance.ToString());
-        }
-        if (Input.GetKeyDown(KeyCode.O))
-        {
-            PlayerPrefs0.WriteString("Distance=" + distance);
-        }
-        if (Input.GetKeyDown(KeyCode.P))
-        {
-            string s = PlayerPrefs0.ReadString();
-            distanceText.text = s;
-            Time.timeScale= 0f;
+            if (Input.GetKeyDown(KeyCode.F3))
+            {
+                PlayerPrefs.SetString(KEY_DISTANCE, distance.ToString());
+                PlayerPrefs.SetString(KEY_PLAYER_NAME, "Jim " + distance.ToString());
+            }
+            if (Input.GetKeyDown(KeyCode.O))
+            {
+                PlayerPrefs0.WriteString("Distance=" + distance);
+            }
+            if (Input.GetKeyDown(KeyCode.P))
+            {
+                string s = PlayerPrefs0.ReadString();
+                distanceText.text = s;
+                Time.timeScale = 0f;
+            }
         }
     }
 
@@ -162,6 +173,7 @@ public class GameManager : MonoBehaviour
     public void OnReturnToStartMenu()
     {
         SetGameState(GameState.StartMenu);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
     public void OnInstructionsButton()
@@ -179,12 +191,12 @@ public class GameManager : MonoBehaviour
         Application.OpenURL(urlAnimalFarm1);
     }
 
+    /*
     private void playDerp()
     {
         Time.timeScale = 1.0f;
         GameObject.Find("EmojiDerp").GetComponent<ParticleSystem>().Play();
         GameObject.Find("Beta").GetComponent<ParticleSystem>().Play();
-        /*
         return;
         Canvas canvas = GameObject.Find("Canvas").GetComponent<Canvas>();
         Camera camera = GameObject.Find("Main Camera").GetComponent<Camera>();
@@ -205,12 +217,8 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 1.0f;
         Debug.Log("PlayDerp");
         playDerp();
-
-
-        */
-
     }
-
+    */
     public void OnFeedbackButton()
     {
         Application.OpenURL(urlFeedback);

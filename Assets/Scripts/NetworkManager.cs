@@ -44,8 +44,13 @@ public class NetworkManager : MonoBehaviour
 
     private void Awake()
     {
-        DontDestroyOnLoad(this);
-        instance = this;
+        if (instance != null)
+            Destroy(this);
+        else
+        {
+            DontDestroyOnLoad(this);
+            instance = this;
+        }
     }
 
     IEnumerator GetRequest(string url, Action<UnityWebRequest> callback)
