@@ -18,8 +18,8 @@ public class SpawnManager : MonoBehaviour
     private int poolSize = 3;
     private Pool[] pools;
 
-    [SerializeField] float minDelay = 0.6f;
-    [SerializeField] float maxDelay = 2.5f;
+    [SerializeField] float minDelay = 1.6f;
+    [SerializeField] float maxDelay = 3.5f;
 
 
     void Start()
@@ -44,7 +44,6 @@ public class SpawnManager : MonoBehaviour
     {
         if (GameManager.instance.Running)
         {
-            Debug.Log("RandomInvoker()");
             SpawnObstacle();
         }
         Invoke("RandomInvoker", Random.Range(minDelay, maxDelay));
@@ -68,7 +67,7 @@ public class SpawnManager : MonoBehaviour
         else
             Debug.Log("WTF: pools return NULL");
 
-        Debug.Log("SpawnObstacle: " + obstacles[nPrefab].name + " " + position);
+        //Debug.Log("SpawnObstacle: " + obstacles[nPrefab].name + " " + position);
         //obstacle.transform.up -= (transform.up - hit.normal) * 0.4f;
     }
 

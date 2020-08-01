@@ -20,16 +20,17 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField] ParticleSystem explosionParticle;
     [SerializeField] ParticleSystem dirt;
+    [SerializeField] AudioClip sfxJump;
+    [SerializeField] AudioClip sfxDeath;
     bool isDirtPlaying = false;
 
     Terrain terrain;
     Animator animator;
+    new AudioSource audio;
 
     bool isOnGround = true;
     bool isDoubleJump = false;
 
-    [SerializeField] GameObject x;
-    
 
     void PlayDirt(bool play = true)
     {
@@ -49,6 +50,7 @@ public class PlayerController : MonoBehaviour
         playerRb = GetComponent<Rigidbody>();
         //Physics.gravity = gravityModifier;
         animator = GetComponent<Animator>();
+        audio = GetComponent<AudioSource>();
         terrain = GameObject.FindObjectOfType<Terrain>();
         Physics.gravity = new Vector3(0, -18f, 0);
         animator.SetFloat("Speed_f", 0);
@@ -60,13 +62,10 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.M))
-            Instantiate(x);
-
         float currentSpeed = !GameManager.instance.Running ? 0f :
           deathTime == 0f ? speed : Mathf.Lerp(speed, 0f, (Time.time - deathTime) / deathDuration);
         // set speed_f to 1.0 for full speed
-
+         
         animator.SetFloat("Speed_f", currentSpeed / walkThreshold);
 
         Vector3 offset = new Vector3(1f, 0f, 0) * Time.deltaTime * currentSpeed;
@@ -78,18 +77,19 @@ public class PlayerController : MonoBehaviour
         if (speed < initialSpeed)
             pos = introMovement(pos);
 
-        float height = terrain.SampleHeight(pos);
-        if (height > pos.y)
-            pos.y = height;
+        float terrainHeight = terrain.SampleHeight(pos);
+        if (terrainHeight > pos.y)
+            pos.y = terrainHeight;
 
         transform.position = pos;
-        if (!isOnGround && pos.y < height + 0.2)
+        /*
+        if (!isOnGround && pos.y < terrainHeight + 0.2)
         {
+            Debug.Log("Setting isOnGround=" + true);
             isOnGround = true;
             isDoubleJump = false;
-            PlayDirt();
-            Debug.Log("I'm playing dirt");
         }
+        */
 
         if (isOnGround && !isDirtPlaying && speed == currentSpeed)
             PlayDirt();
@@ -98,13 +98,20 @@ public class PlayerController : MonoBehaviour
         {
             PlayDirt(false);
             Debug.Log("Jumping with force " + jumpForce + " Gravity is " + Physics.gravity);
-            if (!isOnGround)
-                isDoubleJump = true;
+            isDoubleJump = !isOnGround;
+
+            Debug.Log("JUMP: isOnGround:" + isOnGround + ",  isDoubleJump:" + isDoubleJump);
+
             if (isOnGround)
+            {
                 playerRb.velocity = Vector3.zero;
+                isOnGround = false;
+            }
             playerRb.AddForce(Vector3.up * jumpForce * (isDoubleJump ? 2 : 1), ForceMode.Impulse);
-            isOnGround = false;
+
             animator.SetTrigger("Jump_trig");
+            audio.pitch = isDoubleJump ? 1.5f : 1.0f;
+            audio.PlayOneShot(sfxJump);
         }
     }
 
@@ -138,6 +145,7 @@ public class PlayerController : MonoBehaviour
 
         if (other.CompareTag("Obstacle") && GameManager.instance.Running)
         {
+            audio.PlayOneShot(sfxDeath);
             Debug.Log("I hit a " + other.name);
             explosionParticle.Play();
             animator.SetInteger("DeathType_int", 2);
@@ -146,6 +154,9 @@ public class PlayerController : MonoBehaviour
                 deathTime = Time.time;
             Invoke("GameOver", deathDuration);
         }
+        isOnGround = true;
+        isDoubleJump = false;
+
     }
 
     // todo emoji pleading

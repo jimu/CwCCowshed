@@ -37,7 +37,7 @@ public class Pool
             {
                 obj.SetActive(true);
                 obj.transform.position = position;
-                Debug.Log("Get(" + obj.name + ")");
+               // Debug.Log("Get(" + obj.name + ")");
                 return obj;
             }
         }
