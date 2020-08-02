@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
+
+// This implements the "Enter your name" Dialog
 public class SubmitNewHighScore : MonoBehaviour
 {
     const int MAX_PLAYER_NAME_LENGTH = 15;

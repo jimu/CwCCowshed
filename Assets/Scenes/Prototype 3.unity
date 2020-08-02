@@ -634,7 +634,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: Abcdefghijlmnop
+  m_Text: 
 --- !u!222 &121864295
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -919,7 +919,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: 00
+  m_Text: 
 --- !u!222 &157371008
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1002,7 +1002,7 @@ Light:
   m_BounceIntensity: 1
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
+  m_BoundingSphereOverride: {x: 0, y: 5.762e-42, z: 0, w: NaN}
   m_UseBoundingSphereOverride: 0
   m_ShadowRadius: 0
   m_ShadowAngle: 0
@@ -5887,7 +5887,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: ...
+  m_Text: 
 --- !u!222 &1107072432
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -9899,7 +9899,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: ...
+  m_Text: 
 --- !u!222 &1865521029
 CanvasRenderer:
   m_ObjectHideFlags: 0

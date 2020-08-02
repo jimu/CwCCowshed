@@ -110,49 +110,9 @@ public class GameManager : MonoBehaviour
     {
         Debug.Log("ScoresReady: " + NetworkManager.instance.scores.Length);
 
-        string ranks = "";
-        string names = "";
-        string scores = "";
-        string dates = "";
-        string pranks = "";
-        string pnames = "";
-        string pscores = "";
-
-        foreach (HighScore score in NetworkManager.instance.scores)
-        {
-            string playerName = GetPlayerName();
-            //Debug.Log("Rank=" + score.rank + " Name=" + score.name + " score=" + score.score + " date=" + score.date);
-            if (score.name == playerName)
-            {
-                pranks += score.rank + "\n";
-                pnames += score.name + "\n";
-                pscores += score.score + "\n";
-            }
-            else
-            {
-                pranks += "\n";
-                pnames += "\n";
-                pscores += "\n";
-            }
-            if (score.name.Length > 0)
-            {
-                ranks += score.rank + "\n";
-                names += score.name + "\n";
-                scores += score.score + "\n";
-                dates += score.date + "\n";
-            }
-            else
-            {
-                ranks += "\n";
-                names += "...\n";
-                scores += "\n";
-                dates += "\n";
-            }
-        }
-
         tombstoneList.SetTombstones();
 
-        highScorePanel.GetComponent<PopulateHighScores>().ScoresReady(ranks, names, scores, dates, pranks, pnames, pscores);
+        highScorePanel.GetComponent<PopulateHighScores>().ScoresReady();
     }
 
     float SetDistance(float value)
@@ -169,7 +129,7 @@ public class GameManager : MonoBehaviour
         {
             SetDistance(playerTransform.position.x);
             tombstoneList.UpdateIndicator(distance);
-
+/*
             if (Input.GetKeyDown(KeyCode.F3))
             {
                 PlayerPrefs.SetString(KEY_DISTANCE, distance.ToString());
@@ -185,6 +145,7 @@ public class GameManager : MonoBehaviour
                 distanceText.text = s;
                 Time.timeScale = 0f;
             }
+*/
         }
     }
 

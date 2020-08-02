@@ -22,6 +22,7 @@ public class TombstoneFactory : MonoBehaviour
 
     public GameObject Create(string name, float distance, string date)
     {
+        Debug.Log("TombstoneFactory.Create(" + name + ", " + distance + ", " + date + ")");
         Vector3 pos = new Vector3(distance, 0, Random.Range(Z_MIN, Z_MAX));
         float height = terrain.SampleHeight(pos);
         pos.y = height;

@@ -67,7 +67,7 @@ public class NetworkManager : MonoBehaviour
     {
         string playerName = GameManager.instance.GetPlayerName();
         string playerNameClause = playerName.Length > 1 ? "?name=" + playerName : "";
-        string url = "https://osaka.jimu.net/cwc/cwc3/getleaderboard.php" + playerNameClause;
+        string url = "https://osaka.jimu.net/cwc/cwc3/getranks.php" + playerNameClause;
 
         Debug.Log("Fetch(): nextFetch=" + nextFetch + " Time.time=" + Time.time + " fetching=" + (fetching ? "T" : "F"));
         if (!fetching && (nextFetch < Time.realtimeSinceStartup || force))
@@ -89,8 +89,8 @@ public class NetworkManager : MonoBehaviour
                     scores = new HighScore[rows.Length / 4];
                     for (int i = 0; i < rows.Length - 3; i += 4)
                     {
-                        Debug.Log("i=" + i + " scores.Length=" + scores.Length + " rows.Length=" + rows.Length + " scores.Length=" + scores.Length);
-                        scores[i / 4] = new HighScore(rows[i], rows[i + 1], rows[i + 2], rows[i + 3]); // rank, name, score, date // name, score, epitath, date
+                        //Debug.Log("i=" + i + " scores.Length=" + scores.Length + " rows.Length=" + rows.Length + " scores.Length=" + scores.Length);
+                        scores[i / 4] = new HighScore(rows[i], rows[i + 1], rows[i + 2], rows[i + 3]); // rank, name, score, date 
                     }
                     scoresReady = true;
                     fetching = false;

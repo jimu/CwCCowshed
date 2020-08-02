@@ -44,15 +44,20 @@ public class TombstoneList : MonoBehaviour
 
     public void SetTombstones()
     {
-        Debug.Log("SetTombstones()");
 
         tombstones = NetworkManager.instance.scores;
+
+
         if (tombstones != null)
         {
-            next = 0;
+            Debug.Log("SetTombstones. There are " + tombstones.Length + " tombstones");
+            ////next = 0;
+            next = tombstones.Length - 1;
             noMore = false;
             SetNext(0);
         }
+        else
+            Debug.Log("SetTombstones. Tombstones is NULL");
     }
 
     public void SetNext(float distance)
@@ -61,15 +66,17 @@ public class TombstoneList : MonoBehaviour
         Assert.IsNotNull(tombstones);
 
         while (next < tombstones.Length && tombstones[next].score < distance)
-            next++;
+            ////next++;
+            next--;
 
-        if (next < tombstones.Length)
+        ////if (next < tombstones.Length)
+        if (next >= 0)
         { 
             nextDistance = tombstones[next].score;
             float delta = nextDistance - distance;
             SetIndicatorActive(delta > MIN_INDICATOR_DISTANCE);
 
-            tombstoneFactory.Create(tombstones[next].name, tombstones[next].score, tombstones[next].date.Substring(0,4));
+            tombstoneFactory.Create(tombstones[next].name, tombstones[next].score, tombstones[next].date);
         }
         else
         {

@@ -18,15 +18,17 @@ public class PopulateHighScores : MonoBehaviour
     [SerializeField] Text datesText;
     [SerializeField] GameObject loading;
 
-    public void ScoresReady(string ranks, string names, string scores, string dates, string pranks, string pnames, string pscores)
+    public void ScoresReady()
     {
-        ranksText.text = ranks;
-        namesText.text = names;
-        scoresText.text = scores;
-        datesText.text = dates;
-        pranksText.text = pranks;
-        pnamesText.text = pnames;
-        pscoresText.text = pscores;
+        Leaderboard leaderboard = new Leaderboard(NetworkManager.instance.scores, GameManager.instance.GetPlayerName());
+
+        ranksText.text = leaderboard.ranks;
+        namesText.text = leaderboard.names;
+        scoresText.text = leaderboard.scores;
+        datesText.text = leaderboard.dates;
+        pranksText.text = leaderboard.pranks;
+        pnamesText.text = leaderboard.pnames;
+        pscoresText.text = leaderboard.pscores;
 
         pranksText.gameObject.SetActive(true);
         pnamesText.gameObject.SetActive(true);
