@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditor.UIElements;
-using UnityEditorInternal;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.UI;
 
@@ -62,7 +57,7 @@ public class TombstoneList : MonoBehaviour
 
     public void SetNext(float distance)
     {
-        Debug.Log("SetNext(d=" + distance + ", n=" + next + ")");
+        //Debug.Log("SetNext(d=" + distance + ", n=" + next + ")");
         Assert.IsNotNull(tombstones);
 
         while (next < tombstones.Length && tombstones[next].score < distance)

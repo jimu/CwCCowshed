@@ -45,6 +45,9 @@ public class Leaderboard
         names += "...\n";
         scores += "\n";
         dates += "\n";
+        pranks += "\n";
+        pnames += "\n";
+        pscores += "\n";
     }
 
 

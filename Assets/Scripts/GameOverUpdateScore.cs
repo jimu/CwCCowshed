@@ -8,7 +8,7 @@ public class GameOverUpdateScore : MonoBehaviour
     
     private void OnEnable()
     {
-        Debug.Log("GameOverUpdateScore.OnEnable called from " + gameObject.name);
+        //Debug.Log("GameOverUpdateScore.OnEnable called from " + gameObject.name);
         GetComponent<Text>().text = GameManager.instance.GetScore().ToString() + " ft";
     }
 }

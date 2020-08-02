@@ -54,6 +54,7 @@ public class GameManager : MonoBehaviour
 
     void Awake()
     {
+        Debug.Log("GM.Awake");
         distanceText = GameObject.FindGameObjectWithTag("DistanceText").GetComponent<Text>();
         playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
 
@@ -63,9 +64,13 @@ public class GameManager : MonoBehaviour
 
         audioSource = GetComponent<AudioSource>();
 
+        Debug.Log("GM.Awake1");
         tombstoneFactory = GetComponent<TombstoneFactory>();
+        Debug.Log("GM.Awake2");
         tombstoneList = GetComponent<TombstoneList>();
+        Debug.Log("GM.Awake3");
         tombstoneList.tombstoneFactory = tombstoneFactory;
+        Debug.Log("GM.Awake4");
         /*
         string playername = PlayerPrefs.GetString(KEY_PLAYER_NAME);
         Debug.Log("Player Name: " + PlayerPrefs.GetString(KEY_PLAYER_NAME) + (playername == null ? " (NULL)" : "(NOTNULL)") + (playername == "" ? " (EMPTY)" : " (NOTEMPTY)"));
@@ -82,21 +87,35 @@ public class GameManager : MonoBehaviour
     }
 
 
+    private float SetSessionHighScore(float score)
+    {
+        return NetworkManager.highScore = score;
+    }
+
+
+    public float GetSessionHighScore()
+    {
+        return NetworkManager.highScore;
+    }
+
+
     public void GameOver()
     {
-        SetGameState(distance < 10 ? GameState.GameOver : GameState.SubmitHighScore);
-
-        // todo highscore
+        SetGameState(distance < GetSessionHighScore() ? GameState.GameOver : GameState.SubmitHighScore);
+        SetSessionHighScore(distance);
     }
 
 
 
     private void Start()
     {
+        Debug.Log("GM.Start");
         NetworkManager.instance.Listen(gameObject, "ScoresReady");
+        Debug.Log("GM.Start1");
         NetworkManager.instance.Fetch();
-        Debug.Log("Start");
+        Debug.Log("GM.Start2");
         SetGameState(GameState.StartMenu);
+        Debug.Log("GM.Start3");
 
         //tombstoneFactory.Create("Boxer", 20f, "I will work harder!", "1944");
         //tombstoneFactory.Create("Squealer", 24f, "Do not imagine, comrades, that leadership is a pleasure!", "Jul 29");
@@ -108,7 +127,7 @@ public class GameManager : MonoBehaviour
 
     void ScoresReady()
     {
-        Debug.Log("ScoresReady: " + NetworkManager.instance.scores.Length);
+        //Debug.Log("ScoresReady: " + NetworkManager.instance.scores.Length);
 
         tombstoneList.SetTombstones();
 
@@ -186,7 +205,7 @@ public class GameManager : MonoBehaviour
 
     public string GetPlayerName()
     {
-        return PlayerPrefs.GetString("playerName");
+        return PlayerPrefs.GetString("playerName", "");
     }
 
 

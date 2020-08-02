@@ -12,6 +12,7 @@ public class HighScore
     public int score;
     public string date;
 
+
     public HighScore(string rankStr, string name, string scoreStr, string date)
     {
         this.rank = Convert.ToInt32(rankStr);
@@ -34,6 +35,8 @@ public class NetworkManager : MonoBehaviour
 
     private GameObject listener = null;
     private string listenMethod;
+
+    public static float highScore = 0f;
 
     public void Listen(GameObject listener, string method)
     {
@@ -65,9 +68,13 @@ public class NetworkManager : MonoBehaviour
 
     public void Fetch(bool force = false)
     {
+        Debug.Log("NM.Fetch1");
         string playerName = GameManager.instance.GetPlayerName();
+        Debug.Log("NM.Fetch2");
         string playerNameClause = playerName.Length > 1 ? "?name=" + playerName : "";
+        Debug.Log("NM.Fetch3");
         string url = "https://osaka.jimu.net/cwc/cwc3/getranks.php" + playerNameClause;
+        Debug.Log("NM.Fetch4");
 
         Debug.Log("Fetch(): nextFetch=" + nextFetch + " Time.time=" + Time.time + " fetching=" + (fetching ? "T" : "F"));
         if (!fetching && (nextFetch < Time.realtimeSinceStartup || force))

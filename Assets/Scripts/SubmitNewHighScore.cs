@@ -67,7 +67,7 @@ public class SubmitNewHighScore : MonoBehaviour
 
         if (name.Length > 0)
         {
-            Debug.Log("SubmitNewHighScore.OnSubmitbuttonPressed()");
+            //Debug.Log("SubmitNewHighScore.OnSubmitbuttonPressed()");
             NetworkManager.instance.SumbitScore(name, gm.GetScore());
             gm.SavePlayerName(name);
             gm.OnHighScoresButton();

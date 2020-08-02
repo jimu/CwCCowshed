@@ -29,6 +29,7 @@ public class SpawnManager : MonoBehaviour
         player = GameObject.FindGameObjectWithTag("Player").transform;
         BuildPools();
         Invoke("RandomInvoker", startDelay);
+        Debug.Log("SpawnManager.Start() - Exit");
     }
 
     void BuildPools()
