@@ -69,7 +69,7 @@ public class TombstoneList : MonoBehaviour
             float delta = nextDistance - distance;
             SetIndicatorActive(delta > MIN_INDICATOR_DISTANCE);
 
-            tombstoneFactory.Create(tombstones[next].name, tombstones[next].score, tombstones[next].epitath, tombstones[next].date.Substring(0,4));
+            tombstoneFactory.Create(tombstones[next].name, tombstones[next].score, tombstones[next].date.Substring(0,4));
         }
         else
         {

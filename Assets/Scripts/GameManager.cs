@@ -12,7 +12,7 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
-    public enum GameState { INVALID, StartMenu, Instructions, Playing, GameOver, HighScoreMenu}
+    public enum GameState { INVALID, StartMenu, Instructions, Playing, GameOver, SubmitHighScore, HighScoreMenu}
 
     string urlAnimalFarm1 = "https://www.jimu.net/CwCAnimalFarm/index.html";
     string urlFeedback = "https://learn.unity.com/submission/5f1ad2ededbc2a00215d2dc7";
@@ -23,6 +23,7 @@ public class GameManager : MonoBehaviour
     Transform playerTransform;
     TombstoneFactory tombstoneFactory;
     TombstoneList tombstoneList;
+    AudioSource audioSource;
 
     const string KEY_PLAYER_NAME = "jimu.playername";
     const string KEY_DISTANCE = "jimu.cowshed.distance";
@@ -32,8 +33,11 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject highScorePanel;
     [SerializeField] GameObject instructionsPanel;
     [SerializeField] GameObject gameOverPanel;
+    [SerializeField] GameObject enterNamePanel;
 
     [SerializeField] GameObject nextTombstoneIndicator;
+
+    [SerializeField] public AudioClip sfxBadInput;
 
     private bool _running;
 
@@ -52,9 +56,12 @@ public class GameManager : MonoBehaviour
     {
         distanceText = GameObject.FindGameObjectWithTag("DistanceText").GetComponent<Text>();
         playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
+
         SetDistance(0);
 
         instance = this;
+
+        audioSource = GetComponent<AudioSource>();
 
         tombstoneFactory = GetComponent<TombstoneFactory>();
         tombstoneList = GetComponent<TombstoneList>();
@@ -77,7 +84,8 @@ public class GameManager : MonoBehaviour
 
     public void GameOver()
     {
-        SetGameState(GameState.GameOver);
+        SetGameState(distance < 10 ? GameState.GameOver : GameState.SubmitHighScore);
+
         // todo highscore
     }
 
@@ -102,21 +110,49 @@ public class GameManager : MonoBehaviour
     {
         Debug.Log("ScoresReady: " + NetworkManager.instance.scores.Length);
 
+        string ranks = "";
         string names = "";
         string scores = "";
         string dates = "";
+        string pranks = "";
+        string pnames = "";
+        string pscores = "";
 
         foreach (HighScore score in NetworkManager.instance.scores)
         {
-            Debug.Log("Name=" + score.name + " score=" + score.score + " epitath=" + score.epitath + " date=" + score.date);
-            names += score.name + "\n";
-            scores += score.score + "\n";
-            dates += score.date + "\n";
+            string playerName = "Fred";
+            //Debug.Log("Rank=" + score.rank + " Name=" + score.name + " score=" + score.score + " date=" + score.date);
+            if (score.name == playerName)
+            {
+                pranks += score.rank + "\n";
+                pnames += score.name + "\n";
+                pscores += score.score + "\n";
+            }
+            else
+            {
+                pranks += "\n";
+                pnames += "\n";
+                pscores += "\n";
+            }
+            if (score.name.Length > 0)
+            {
+                ranks += score.rank + "\n";
+                names += score.name + "\n";
+                scores += score.score + "\n";
+                dates += score.date + "\n";
+            }
+            else
+            {
+                ranks += "\n";
+                names += "...\n";
+                scores += "\n";
+                dates += "\n";
+            }
         }
 
         tombstoneList.SetTombstones();
 
-        highScorePanel.GetComponent<PopulateHighScores>().ScoresReady(names, scores, dates);
+        highScorePanel.GetComponent<PopulateHighScores>().ScoresReady(ranks, names, scores, dates, pranks, pnames, pscores);
     }
 
     float SetDistance(float value)
@@ -160,11 +196,39 @@ public class GameManager : MonoBehaviour
         highScorePanel.SetActive(gameState == GameState.HighScoreMenu);
         instructionsPanel.SetActive(gameState == GameState.Instructions);
         gameOverPanel.SetActive(gameState == GameState.GameOver);
+        enterNamePanel.SetActive(gameState == GameState.SubmitHighScore);
 
         _running = gameState == GameState.Playing;
         //Time.timeScale = gameState == GameState.Playing ? 1f : 0f;
 
     }
+
+
+
+    public string SavePlayerName(string name)
+    {
+        PlayerPrefs.SetString("playerName", name);
+        return name;
+    }
+
+    public void OnHighScoresPressed()
+    {
+        SetGameState(GameState.HighScoreMenu);
+    }
+
+
+    public void SeeAllHighscoresPressed()
+    {
+        Application.OpenURL("https://osaka.jimu.net/cwc");
+    }
+
+
+    public string GetPlayerName()
+    {
+        return PlayerPrefs.GetString("playerName");
+    }
+
+
 
     public void OnStartButton()
     {
@@ -224,6 +288,13 @@ public class GameManager : MonoBehaviour
         Application.OpenURL(urlFeedback);
     }
 
+
+    public void PlaySound(AudioClip clip)
+    {
+        audioSource.PlayOneShot(clip);
+
+    }
 }
+
 
 

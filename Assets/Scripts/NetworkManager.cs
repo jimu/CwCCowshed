@@ -7,16 +7,16 @@ using UnityEngine.SocialPlatforms.Impl;
 
 public class HighScore
 {
+    public int rank;
     public string name;
-    public string epitath;
     public int score;
     public string date;
 
-    public HighScore(string name, string scoreStr, string epitath, string date)
+    public HighScore(string rankStr, string name, string scoreStr, string date)
     {
+        this.rank = Convert.ToInt32(rankStr);
         this.name = name;
         score = Convert.ToInt32(scoreStr);
-        this.epitath = epitath;
         this.date = date; // .Substring(0, 10);  // "2020-12-31 23:59:59"
     }
 }
@@ -71,7 +71,8 @@ public class NetworkManager : MonoBehaviour
             Debug.Log("Starting Coroutine");
 
             fetching = true;
-            StartCoroutine(GetRequest("https://osaka.jimu.net/cwc/cwc3/getscores.php?asc", (UnityWebRequest req) =>
+            StartCoroutine(GetRequest("https://osaka.jimu.net/cwc/cwc3/getleaderboard.php?name=Fred", (UnityWebRequest req) =>
+            //StartCoroutine(GetRequest("https://osaka.jimu.net/cwc/cwc3/getscores.php?asc", (UnityWebRequest req) =>
             {
                 if (req.isNetworkError || req.isHttpError)
                 {
@@ -85,7 +86,7 @@ public class NetworkManager : MonoBehaviour
                     for (int i = 0; i < rows.Length - 3; i += 4)
                     {
                         Debug.Log("i=" + i + " scores.Length=" + scores.Length + " rows.Length=" + rows.Length + " scores.Length=" + scores.Length);
-                        scores[i / 4] = new HighScore(rows[i], rows[i + 1], rows[i + 2], rows[i + 3]); // name, score, epitath, date
+                        scores[i / 4] = new HighScore(rows[i], rows[i + 1], rows[i + 2], rows[i + 3]); // rank, name, score, date // name, score, epitath, date
                     }
                     scoresReady = true;
                     fetching = false;
@@ -96,11 +97,11 @@ public class NetworkManager : MonoBehaviour
             }));
         }
     }
-    public void SumbitScore(string name, int score, string epitath)
+    public void SumbitScore(string name, int score)
     {
         // git hub users: please don't abuse this
-        string url = "https://osaka.jimu.net/cwc/cwc3/savescores.php?name=" + name + "&score=" + score + "&epitath=" + epitath;
-        Debug.Log("SubmitScore(" + name + ", " + score + ", " + epitath + ")");
+        string url = "https://osaka.jimu.net/cwc/cwc3/savescores.php?name=" + name + "&score=" + score;
+        Debug.Log("SubmitScore(" + name + ", " + score +")");
         Post(url);
     }
 

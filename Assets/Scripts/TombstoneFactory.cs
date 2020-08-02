@@ -20,7 +20,7 @@ public class TombstoneFactory : MonoBehaviour
     }
 
 
-    public GameObject Create(string name, float distance, string epitath, string date)
+    public GameObject Create(string name, float distance, string date)
     {
         Vector3 pos = new Vector3(distance, 0, Random.Range(Z_MIN, Z_MAX));
         float height = terrain.SampleHeight(pos);
@@ -29,9 +29,9 @@ public class TombstoneFactory : MonoBehaviour
         //tombstone.GetComponent<Tombstone>().Set(name, distance, epitath, date);
         Tombstone t = tombstone.GetComponent<Tombstone>();
         if (t != null)
-            t.Set(name, distance, epitath, date);
+            t.Set(name, distance, date);
         else
-            tombstone.GetComponent<TombstoneTMP>().Set(name, distance, epitath, date);
+            tombstone.GetComponent<TombstoneTMP>().Set(name, distance, date);
 
         return tombstone;
     }

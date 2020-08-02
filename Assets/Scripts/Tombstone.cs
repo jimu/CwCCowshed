@@ -13,14 +13,12 @@ public class Tombstone : MonoBehaviour
 
     private new string name;
     private float score;
-    private string epitath;
     private string date;
 
-    public void Set(string name, float score, string epitath, string date)
+    public void Set(string name, float score, string date)
     {
         this.name = name;
         this.score = score;
-        this.epitath = epitath;
         this.date = date;
 
         nameMesh.text = name;
