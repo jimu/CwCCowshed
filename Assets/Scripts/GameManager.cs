@@ -120,7 +120,7 @@ public class GameManager : MonoBehaviour
 
         foreach (HighScore score in NetworkManager.instance.scores)
         {
-            string playerName = "Fred";
+            string playerName = GetPlayerName();
             //Debug.Log("Rank=" + score.rank + " Name=" + score.name + " score=" + score.score + " date=" + score.date);
             if (score.name == playerName)
             {

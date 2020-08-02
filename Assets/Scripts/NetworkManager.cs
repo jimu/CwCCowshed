@@ -65,14 +65,18 @@ public class NetworkManager : MonoBehaviour
 
     public void Fetch(bool force = false)
     {
+        string playerName = GameManager.instance.GetPlayerName();
+        string playerNameClause = playerName.Length > 1 ? "?name=" + playerName : "";
+        string url = "https://osaka.jimu.net/cwc/cwc3/getleaderboard.php" + playerNameClause;
+
         Debug.Log("Fetch(): nextFetch=" + nextFetch + " Time.time=" + Time.time + " fetching=" + (fetching ? "T" : "F"));
         if (!fetching && (nextFetch < Time.realtimeSinceStartup || force))
         {
-            Debug.Log("Starting Coroutine");
+            Debug.Log("Starting Coroutine. Url=" + url);
 
             fetching = true;
-            StartCoroutine(GetRequest("https://osaka.jimu.net/cwc/cwc3/getleaderboard.php?name=Fred", (UnityWebRequest req) =>
-            //StartCoroutine(GetRequest("https://osaka.jimu.net/cwc/cwc3/getscores.php?asc", (UnityWebRequest req) =>
+
+            StartCoroutine(GetRequest(url, (UnityWebRequest req) =>
             {
                 if (req.isNetworkError || req.isHttpError)
                 {
@@ -80,7 +84,7 @@ public class NetworkManager : MonoBehaviour
                 }
                 else
                 {
-                    Debug.Log(req.downloadHandler.text);
+                    //Debug.Log(req.downloadHandler.text);
                     string[] rows = req.downloadHandler.text.Split('|');
                     scores = new HighScore[rows.Length / 4];
                     for (int i = 0; i < rows.Length - 3; i += 4)
