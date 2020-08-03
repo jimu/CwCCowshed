@@ -8,13 +8,14 @@ using System.Runtime.InteropServices;
 public class Link : MonoBehaviour
 {
     string animalFarm1feedbackUrl = "https://learn.unity.com/submission/5f1ad2ededbc2a00215d2dc7";
+    string animalFarm2feedbackUrl = "https://learn.unity.com/submission/5f275946edbc2a001f3c045d";
     //string easterEggUrl = "https://www.youtube.com/watch?v=-GL5lzMJomY";
     //string highscoresUrl = "https://osaka.jimu.net/cwc";
     public void OpenLinkJSPlugin(int iUrl = 0)
     {
         Debug.Log("Calling pluggin");
 #if !UNITY_EDITOR
-openWindow(animalFarm1feedbackUrl);
+openWindow(animalFarm2feedbackUrl);
 #endif
     }
 

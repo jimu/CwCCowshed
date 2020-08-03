@@ -65,7 +65,7 @@ public class SubmitNewHighScore : MonoBehaviour
     {
         string name = nameInputField.text;
 
-        if (name.Length > 0)
+        if (name.Length > 2)
         {
             //Debug.Log("SubmitNewHighScore.OnSubmitbuttonPressed()");
             NetworkManager.instance.SumbitScore(name, gm.GetScore());
