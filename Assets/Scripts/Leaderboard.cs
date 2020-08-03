@@ -68,10 +68,13 @@ public class Leaderboard
 
         // if total fewer or equal to 8, print all
         // if player not found or in top 8, print all 8.
+        // if player not in top 8 but is last row, print top 5 and last 3 lines are: --- p-1 p
         // otherwise print top 4 and last four lines are:  --- p-1 p p+1
+        //
         // #9, so print 1-2-3-4-*-8-9-10
-        int toprows = numRows <= MAXROWS ? numRows :             
+        int toprows = numRows <= MAXROWS ? numRows :
             playerRow >= numRows || playerRow < MAXROWS ? MAXROWS :
+            playerRow == numRows - 1 ? MAXROWS - 3 :
             MAXROWS - 4;
 
         Debug.Log("Leaderboard: toprows=" + toprows);
@@ -81,7 +84,7 @@ public class Leaderboard
         if (playerRow >= toprows && playerRow < numRows)
         {
             AppendSeparator();
-            for (int i = playerRow - 1; i < playerRow + 2; ++i)
+            for (int i = playerRow - 1; i < playerRow + 2 && i < numRows; ++i)
                 AppendRecord(highscores[i]);
         }
 

@@ -154,8 +154,10 @@ public class PlayerController : MonoBehaviour
             animator.SetInteger("DeathType_int", 2);
             animator.SetBool("Death_b", true);
             if (deathTime == 0f)
+            {
                 deathTime = Time.time;
-            Invoke("GameOver", deathDuration);
+                Invoke("GameOver", deathDuration);
+            }
         }
         isOnGround = true;
         isDoubleJump = false;
