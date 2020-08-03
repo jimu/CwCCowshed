@@ -18,6 +18,13 @@ public class PopulateHighScores : MonoBehaviour
     [SerializeField] Text datesText;
     [SerializeField] GameObject loading;
 
+    public void Awake()
+    {
+        if (NetworkManager.instance.scoresReady)
+            ScoresReady();
+    }
+
+
     public void ScoresReady()
     {
         Leaderboard leaderboard = new Leaderboard(NetworkManager.instance.scores, GameManager.instance.GetPlayerName());

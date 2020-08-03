@@ -68,13 +68,9 @@ public class NetworkManager : MonoBehaviour
 
     public void Fetch(bool force = false)
     {
-        Debug.Log("NM.Fetch1");
         string playerName = GameManager.instance.GetPlayerName();
-        Debug.Log("NM.Fetch2");
         string playerNameClause = playerName.Length > 1 ? "?name=" + playerName : "";
-        Debug.Log("NM.Fetch3");
         string url = "https://osaka.jimu.net/cwc/cwc3/getranks.php" + playerNameClause;
-        Debug.Log("NM.Fetch4");
 
         Debug.Log("Fetch(): nextFetch=" + nextFetch + " Time.time=" + Time.time + " fetching=" + (fetching ? "T" : "F"));
         if (!fetching && (nextFetch < Time.realtimeSinceStartup || force))

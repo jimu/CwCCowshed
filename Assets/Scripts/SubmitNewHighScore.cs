@@ -47,10 +47,12 @@ public class SubmitNewHighScore : MonoBehaviour
         ValueChangeCheck();
 
         nameInputField.onValueChanged.AddListener(delegate { ValueChangeCheck(); });
+        /* TODO: I meant this to be only ENTER, but clicking anywhere on screen triggers this!
         nameInputField.onEndEdit.AddListener(fieldValue =>
         {
             OnSubmitButtonPressed();
         });
+        */
     }
 
 
@@ -67,7 +69,7 @@ public class SubmitNewHighScore : MonoBehaviour
 
         if (name.Length > 2)
         {
-            //Debug.Log("SubmitNewHighScore.OnSubmitbuttonPressed()");
+            Debug.Log("SubmitNewHighScore.OnSubmitbuttonPressed()");
             NetworkManager.instance.SumbitScore(name, gm.GetScore());
             gm.SavePlayerName(name);
             gm.OnHighScoresButton();

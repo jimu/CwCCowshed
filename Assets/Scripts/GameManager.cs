@@ -40,6 +40,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] public AudioClip sfxBadInput;
 
     private bool _running;
+    private bool isDirty = false;
 
     public int GetScore()
     {
@@ -64,13 +65,9 @@ public class GameManager : MonoBehaviour
 
         audioSource = GetComponent<AudioSource>();
 
-        Debug.Log("GM.Awake1");
         tombstoneFactory = GetComponent<TombstoneFactory>();
-        Debug.Log("GM.Awake2");
         tombstoneList = GetComponent<TombstoneList>();
-        Debug.Log("GM.Awake3");
         tombstoneList.tombstoneFactory = tombstoneFactory;
-        Debug.Log("GM.Awake4");
         /*
         string playername = PlayerPrefs.GetString(KEY_PLAYER_NAME);
         Debug.Log("Player Name: " + PlayerPrefs.GetString(KEY_PLAYER_NAME) + (playername == null ? " (NULL)" : "(NOTNULL)") + (playername == "" ? " (EMPTY)" : " (NOTEMPTY)"));
@@ -103,25 +100,16 @@ public class GameManager : MonoBehaviour
     {
         SetGameState(distance < GetSessionHighScore() ? GameState.GameOver : GameState.SubmitHighScore);
         SetSessionHighScore(distance);
+        SetDirty();
     }
 
 
 
     private void Start()
     {
-        Debug.Log("GM.Start");
         NetworkManager.instance.Listen(gameObject, "ScoresReady");
-        Debug.Log("GM.Start1");
         NetworkManager.instance.Fetch();
-        Debug.Log("GM.Start2");
         SetGameState(GameState.StartMenu);
-        Debug.Log("GM.Start3");
-
-        //tombstoneFactory.Create("Boxer", 20f, "I will work harder!", "1944");
-        //tombstoneFactory.Create("Squealer", 24f, "Do not imagine, comrades, that leadership is a pleasure!", "Jul 29");
-        //tombstoneFactory.Create("Squealer", 24f, "Do not imagine, comrades, that leadership is a pleasure!", "Jul 29");
-        //tombstoneFactory.Create("Sheep", 42f, "FOUR LEGS GOOD, TWO LEGS BAD", "Jul 29");
-        //tombstoneFactory.Create("Benjamin", 96f, "Donkeys live a long time. None of you has ever seen a dead donkey.", "1944");
 
     }
 
@@ -148,23 +136,6 @@ public class GameManager : MonoBehaviour
         {
             SetDistance(playerTransform.position.x);
             tombstoneList.UpdateIndicator(distance);
-/*
-            if (Input.GetKeyDown(KeyCode.F3))
-            {
-                PlayerPrefs.SetString(KEY_DISTANCE, distance.ToString());
-                PlayerPrefs.SetString(KEY_PLAYER_NAME, "Jim " + distance.ToString());
-            }
-            if (Input.GetKeyDown(KeyCode.O))
-            {
-                PlayerPrefs0.WriteString("Distance=" + distance);
-            }
-            if (Input.GetKeyDown(KeyCode.P))
-            {
-                string s = PlayerPrefs0.ReadString();
-                distanceText.text = s;
-                Time.timeScale = 0f;
-            }
-*/
         }
     }
 
@@ -217,7 +188,11 @@ public class GameManager : MonoBehaviour
     public void OnReturnToStartMenu()
     {
         SetGameState(GameState.StartMenu);
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        if (isDirty)
+        {
+            isDirty = false;
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        }
     }
 
     public void OnInstructionsButton()
@@ -273,6 +248,11 @@ public class GameManager : MonoBehaviour
     {
         audioSource.PlayOneShot(clip);
 
+    }
+
+    public void SetDirty()
+    {
+        isDirty = true;
     }
 }
 
